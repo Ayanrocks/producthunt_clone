@@ -22,9 +22,22 @@ def signup(req):
 
 
 def login(req):
-    return render(req, 'accounts/login.html')
+    if(req.method == 'POST'):
+        user = auth.authenticate(username=req.POST['username'], password=req.POST['password'])
+        if user is not None:
+            auth.login(req, user)
+            return redirect('home')
+        else:
+            return render(req, 'accounts/login.html', {"error": "Username or password is incorrect"})
+    else:
+        return render(req, 'accounts/login.html')
 
 
 def logout(req):
+    if(req.method == 'POST'):
+        auth.logout(req)
+        return redirect('home')
+
+
     #TODO need to route to homepage
     return render(req, 'accounts/signup.html')
